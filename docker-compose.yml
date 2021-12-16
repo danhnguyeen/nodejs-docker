@@ -6,8 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./:/app # mount from root enviroment so when we update the code it will update automatically
-    # env_file: .env
+      - ./:/app # mount from the root environment so when we change the code it will update automatically
     environment:
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
@@ -26,12 +25,12 @@ services:
     networks:
       - db-network
       - cache-network
+
   db:
     image: mongo
     volumes:
       - .docker/data/db:/data/db
       - .docker/db-entrypoint.sh:/docker-entrypoint-initdb.d/db-entrypoint.sh
-    command: redis-server --requirepass ${REDIS_PASSWORD}
     restart: unless-stopped
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USER}
@@ -40,7 +39,6 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - CRYPTO_PASSWORD_KEY=${CRYPTO_PASSWORD_KEY}
     networks:
       - db-network
   
@@ -60,12 +58,13 @@ services:
     image: redis:6-alpine
     volumes:
       - .docker/data/redis:/data/redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     restart: unless-stopped
     networks:
       - cache-network
 
 networks:
-  cache-network:
-    driver: bridge
   db-network:
+    driver: bridge
+  cache-network:
     driver: bridge
