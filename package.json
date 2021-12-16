@@ -10,12 +10,12 @@
   "author": "Danh",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.1",
     "crypto-js": "^4.1.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "lodash": "^4.17.21",
-    "mongoose": "^6.0.4"
+    "mongoose": "^6.1.2"
   },
   "devDependencies": {
     "morgan": "^1.10.0",
