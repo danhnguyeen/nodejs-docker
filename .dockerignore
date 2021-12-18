@@ -15,3 +15,6 @@ Dockerfile
 
 # Bỏ qua file docker-compose vì file này chỉ dùng tại thời điểm khởi chạy project
 docker-compose.yml
+
+.git
+.DS_Store

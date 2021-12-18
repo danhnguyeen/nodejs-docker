@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-const cartSchema = new Schema(
+const CartSchema = new Schema(
   {
     _id: mongoose.Schema.Types.ObjectId,
     userId: { type: String, required: true },
@@ -16,4 +16,4 @@ const cartSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Cart", cartSchema);
+module.exports = mongoose.model("Cart", CartSchema);

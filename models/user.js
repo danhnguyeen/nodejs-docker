@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+var CryptoJS = require("crypto-js");
 
-const userSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
@@ -10,4 +11,32 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", userSchema);
+UserSchema.pre('save', async function(next) {
+  const user = this;
+  if (user.isModified('password')) {
+    const hashedPassword = CryptoJS.AES.encrypt(user.password, process.env.CRYPTO_PASSWORD_KEY).toString();
+    user.password = hashedPassword;
+    next();
+  } else {
+    next();
+  }
+})
+
+UserSchema.statics.findByCredenticals = function (email, password) {
+  const User = this;
+  return new Promise((resolve, reject) => {
+    User.findOne({ email }).then(async (doc) => {
+      if (!doc) {
+        return reject(new Error('The email is incorrect'));
+      }
+      const hashedPassword  = CryptoJS.AES.decrypt(doc.password, process.env.CRYPTO_PASSWORD_KEY);
+      var originalPass = hashedPassword.toString(CryptoJS.enc.Utf8); 
+      if (originalPass != password) {
+        return reject(new Error('The password is incorrect'));
+      }
+      resolve(doc);
+    }).catch(err => reject(err));
+  });
+};
+
+module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

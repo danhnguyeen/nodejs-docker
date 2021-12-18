@@ -25,6 +25,8 @@ connectWithRetry()
 
 const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
 
 const app = express();
 
@@ -49,6 +51,8 @@ app.use((req, res, next) => {
 
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
 app.use("/", function(req, res, next) {
   res.json({
