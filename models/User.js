@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-UserSchema.pre('save', async function(next) {
+UserSchema.pre(['save', 'update'], async function(next) {
   const user = this;
   if (user.isModified('password')) {
     const hashedPassword = CryptoJS.AES.encrypt(user.password, process.env.CRYPTO_PASSWORD_KEY).toString();

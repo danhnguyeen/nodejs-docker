@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+var CryptoJS = require("crypto-js");
 
 class AuthController {
   static async register(req, res) {
@@ -35,6 +36,24 @@ class AuthController {
       );
       const user = jwt.decode(token, process.env.JWT_KEY);
       res.send({ token, user });
+    } catch (error) {
+      console.log(error);
+      res.status(401).json(error);
+    }
+  }
+
+  static async updateProfile(req, res) {
+    try {
+      const user = req.user;
+      if (req.body.password) {
+        req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.CRYPTO_PASSWORD_KEY).toString();
+      }
+      const updatedUser = await User.findByIdAndUpdate(
+        user.id,
+        { $set: req.body },
+        { new: true, runValidators: true }
+      );
+      res.send(updatedUser);
     } catch (error) {
       console.log(error);
       res.status(401).json(error);
