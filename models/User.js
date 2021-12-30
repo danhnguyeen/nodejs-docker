@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const UserSchema = new mongoose.Schema(
   {
@@ -10,6 +11,8 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+UserSchema.plugin(mongoosePaginate);
 
 UserSchema.pre(['save', 'update'], async function(next) {
   const user = this;

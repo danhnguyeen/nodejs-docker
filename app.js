@@ -3,6 +3,13 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+var mongoosePaginate = require('mongoose-paginate-v2');
+
+mongoosePaginate.paginate.options = {
+  // lean: true, //return javascript object instead of mongoose object
+  limit: 20,
+};
+
 // mongoose.connect(
 //   `mongodb+srv://danhnguyen:${process.env.MONGO_ATLAS_PW}@cluster0.ax4mq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 // );

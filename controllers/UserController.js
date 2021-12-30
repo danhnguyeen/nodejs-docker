@@ -3,7 +3,7 @@ const User = require("../models/User");
 class UserController {
   static async index(req, res, next) {
     try {
-      const users = await User.find();
+      const users = await User.paginate();
 
       res.status(200).json({
         message: "GET users",
