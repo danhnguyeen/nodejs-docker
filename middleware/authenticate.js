@@ -19,7 +19,6 @@ const isAuthenticated = (req, res, next) => {
 const isAdmin = (req, res, next) => {
   isAuthenticated(req, res, () => {
     if (req.user.isAdmin) {
-      res.status(403).json("a");
       next();
     } else {
       res.status(403).json("You are not allowed to access this action");

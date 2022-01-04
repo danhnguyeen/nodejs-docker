@@ -14,6 +14,14 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.plugin(mongoosePaginate);
 
+UserSchema.post('save', (error, doc, next) => {
+  if (error && error.name === 'MongoServerError' && error.code === 11000) {
+    next({ message: 'Email or Username is already exist' });
+  } else {
+    next(error);
+  }
+});
+
 UserSchema.pre(['save', 'update'], async function(next) {
   const user = this;
   if (user.isModified('password')) {

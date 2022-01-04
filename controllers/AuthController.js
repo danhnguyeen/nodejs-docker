@@ -8,6 +8,7 @@ class AuthController {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
+      isAdmin: req.body.isAdmin,
     });
     try {
       const user = await newUser.save();
@@ -38,7 +39,7 @@ class AuthController {
       res.send({ token, user });
     } catch (error) {
       console.log(error);
-      res.status(401).json(error);
+      res.status(401).json({message: error});
     }
   }
 
@@ -56,7 +57,7 @@ class AuthController {
       res.send(updatedUser);
     } catch (error) {
       console.log(error);
-      res.status(401).json(error);
+      res.status(500).json(error);
     }
   }
 }
