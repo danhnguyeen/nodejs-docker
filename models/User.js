@@ -14,6 +14,7 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.plugin(mongoosePaginate);
 
+// after save
 UserSchema.post('save', (error, doc, next) => {
   if (error && error.name === 'MongoServerError' && error.code === 11000) {
     next({ message: 'Email or Username is already exist' });
@@ -22,6 +23,7 @@ UserSchema.post('save', (error, doc, next) => {
   }
 });
 
+// before save
 UserSchema.pre(['save', 'update'], async function(next) {
   const user = this;
   if (user.isModified('password')) {
@@ -31,6 +33,28 @@ UserSchema.pre(['save', 'update'], async function(next) {
   } else {
     next();
   }
+  // throw new Error("Error");
+})
+
+UserSchema.methods.sayHi = function() {
+  console.log("Hi " + this.username);
+}
+
+UserSchema.statics.findByName = function (name) {
+  // return this.where({name: new RegExp(name, 'i')});
+  return this.find({name: new RegExp(name, 'i')});
+};
+
+// this function can be exec only on an collection result
+UserSchema.query.byName = function (name) {
+  // ex: User.find().byName('Danh') => correct
+  // User.byName('Danh') => incorrect
+  return this.where({name: new RegExp(name, 'i')});
+};
+
+UserSchema.virtual('nameEmail').get(function() {
+  // only return when we call user.nameEmail
+  return `${this.name} ${this.email}`;
 })
 
 UserSchema.statics.findByCredenticals = function (email, password) {

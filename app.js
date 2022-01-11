@@ -3,32 +3,37 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-var mongoosePaginate = require('mongoose-paginate-v2');
+var mongoosePaginate = require("mongoose-paginate-v2");
 
 mongoosePaginate.paginate.options = {
   // lean: true, //return javascript object instead of mongoose object
   limit: 20,
+  sort: { _id: -1 },
 };
 
 // mongoose.connect(
 //   `mongodb+srv://danhnguyen:${process.env.MONGO_ATLAS_PW}@cluster0.ax4mq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 // );
-const dbHost = process.env.DB_HOST || 'localhost'
-const dbPort = process.env.DB_PORT || 27017
-const dbName = process.env.DB_NAME || 'my_db_name'
-const dbUser = process.env.DB_USER
-const dbUserPassword = process.env.DB_PASSWORD
-const mongoUrl = `mongodb://${dbUser}:${dbUserPassword}@${dbHost}:${dbPort}/${dbName}`
+const dbHost = process.env.DB_HOST || "localhost";
+const dbPort = process.env.DB_PORT || 27017;
+const dbName = process.env.DB_NAME || "my_db_name";
+const dbUser = process.env.DB_USER;
+const dbUserPassword = process.env.DB_PASSWORD;
+const mongoUrl = `mongodb://${dbUser}:${dbUserPassword}@${dbHost}:${dbPort}/${dbName}`;
 
-const connectWithRetry = function () { // when using with docker, at the time we up containers. Mongodb take few seconds to starting, during that time NodeJS server will try to connect MongoDB until success.
+const connectWithRetry = function () {
+  // when using with docker, at the time we up containers. Mongodb take few seconds to starting, during that time NodeJS server will try to connect MongoDB until success.
   return mongoose.connect(mongoUrl, { useNewUrlParser: true }, (err) => {
     if (err) {
-      console.error('Failed to connect to mongo on startup - retrying in 5 sec', err)
-      setTimeout(connectWithRetry, 5000)
+      console.error(
+        "Failed to connect to mongo on startup - retrying in 5 sec",
+        err
+      );
+      setTimeout(connectWithRetry, 5000);
     }
-  })
-}
-connectWithRetry()
+  });
+};
+connectWithRetry();
 
 const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
@@ -61,12 +66,12 @@ app.use("/orders", orderRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 
-app.use("/", function(req, res, next) {
+app.use("/", function (req, res, next) {
   res.json({
     success: true,
-    message: "Hello world 111"
-  })
-})
+    message: "Hello world 111",
+  });
+});
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

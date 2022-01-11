@@ -8,7 +8,6 @@ class AuthController {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
-      isAdmin: req.body.isAdmin,
     });
     try {
       const user = await newUser.save();
